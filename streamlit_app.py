@@ -13,7 +13,7 @@ st.set_page_config(
 # 제목 및 상단 꾸미기
 st.title('✨ 실시간 영문 문법 & 맞춤법 검사기 📝')
 st.markdown("---")
-st.write('따로 무거운 설치를 하지 않아 멈추지 않고, **문맥상의 문법 오류와 철자**를 실시간으로 교정합니다.')
+st.write('**문맥상의 문법 오류와 철자**를 실시간으로 교정합니다.')
 
 # 텍스트 입력 공간
 text = st.text_area("✍️ 검사할 영문 텍스트를 입력하세요:", value='', height=150, placeholder="Example: I wants to do something excited.")
