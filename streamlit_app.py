@@ -5,7 +5,7 @@ import json
 
 # 페이지 기본 설정
 st.set_page_config(
-    page_title="초경량 AI 영문 문법 검사기",
+    page_title="Grammar & Spelling Checker",
     page_icon="✨",
     layout="centered"
 )
