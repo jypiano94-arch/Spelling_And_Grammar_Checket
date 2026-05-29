@@ -1,3 +1,2 @@
 streamlit==1.58.0
-language-tool-python==0.3.4
-requests
+pyspellchecker==0.8.2
