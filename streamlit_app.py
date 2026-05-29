@@ -1,24 +1,73 @@
-# from gingerit.gingerit import GingerIt
 import streamlit as st
 import sys
 import os
 
-st.title('Spelling & Grammar Checker')
-text = st.text_area("Enter Text:", value='', height=None, max_chars=None, key=None)
+# 페이지 기본 설정 (브라우저 탭에 이모지와 제목 표시)
+st.set_page_config(
+    page_title="맞춤법 & 문법 검사기",
+    page_icon="✨",
+    layout="centered"
+)
 
-#Added path to sys.path
+# 제목 및 상단 꾸미기 (이모지 추가 및 화려한 연출)
+st.title('✨ 실시간 영문 맞춤법 & 문법 검사기 📝')
+st.markdown("---")
+st.write('텍스트를 입력하시면 AI가 잘못된 문법과 철자를 바로잡고 그 **이유**까지 상세히 설명해 드립니다.')
+
+# 텍스트 입력 공간
+text = st.text_area("✍️ 검사할 영문 텍스트를 입력하세요:", value='', height=150, placeholder="Example: He go to school yesterday.")
+
+# 경로 설정 (기존 설정 유지)
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(MODULE_DIR))
 
-#relative import 
+# 로컬 패키지 불러오기 (GingerIt)
 from local.gingerit import GingerIt 
 
-#from gingerit.gingerit import GingerIt
 parser = GingerIt()
-if st.button('Correct Sentence'):
-    if text == '':
-        st.write('Please enter text for checking') 
+
+# 버튼 클릭 시 작동
+if st.button('🚀 문장 교정하기', use_container_width=True):
+    if text.strip() == '':
+        st.warning('⚠️ 검사할 문장을 입력해 주세요!') 
     else: 
-        result_dict = parser.parse(text)
-        st.markdown('Corrected Sentence: ' + str(result_dict["result"]))
-else: pass
+        with st.spinner('🎯 문법 및 철자 오류를 분석하는 중...'):
+            # GingerIt 분석 실행
+            result_dict = parser.parse(text)
+            corrected_sentence = result_dict["result"]
+            corrections = result_dict["corrections"]
+            
+            # 1. 결과 문장 출력
+            st.success('🎉 교정이 완료되었습니다!')
+            st.markdown(f"### 📍 **교정된 문장:**")
+            st.info(f"**{corrected_sentence}**")
+            
+            st.markdown("---")
+            
+            # 2. 틀린 부분 및 이유 제공
+            st.markdown("### 🔍 오류 수정 리포트")
+            
+            if not corrections:
+                st.balloons()
+                st.success("✅ 완벽합니다! 문법이나 철자 오류가 발견되지 않았습니다.")
+            else:
+                st.write(f"총 **{len(corrections)}개**의 오류를 발견하여 수정했습니다.")
+                
+                # 피드백을 깔끔하게 보여주기 위한 데이터 리스트 생성
+                report_data = []
+                for idx, item in enumerate(corrections, 1):
+                    # 간혹 사전에 정의(definition)가 없는 경우 처리
+                    reason = item['definition'] if item['definition'] else "문맥상 올바른 단어 선택 또는 철자 오류"
+                    
+                    report_data.append({
+                        "번호": idx,
+                        "기존 단어": f"❌ {item['text']}",
+                        "추천 단어": f"✅ {item['correct']}",
+                        "수정 이유 (영문)": reason
+                    })
+                
+                # 테이블(표) 형태로 가독성 있게 화면에 출력
+                st.table(report_data)
+                
+                # 추가적인 팁 제공
+                st.markdown("💡 *Tip: '수정 이유'를 참고하여 문장 표현을 보완해 보세요!*")
