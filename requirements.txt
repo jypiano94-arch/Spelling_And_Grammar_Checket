@@ -1,3 +1,2 @@
 streamlit==1.58.0
-textblob==0.18.0.post0
-textblob-aptagger==0.2.0
+cohere==5.5.0
